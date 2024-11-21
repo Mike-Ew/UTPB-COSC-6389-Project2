@@ -42,20 +42,20 @@ class Neuron:
         total = 0.0
         if self.index >= 0:
             total = inputs[self.index]
-            #print(f'Input neuron {self.index} found value {inputs[self.index]}')
+            # print(f'Input neuron {self.index} found value {inputs[self.index]}')
         else:
             for in_axon in self.inputs:
                 in_n = in_axon.input
                 in_n.forward_prop(inputs)
                 in_val = in_n.result * in_axon.weight
-                #print(f'Adding weighted value {in_val} from input')
+                # print(f'Adding weighted value {in_val} from input')
                 total += in_val
-            #print(f'Neuron computed sum {total} from inputs')
+            # print(f'Neuron computed sum {total} from inputs')
         total += self.bias
-        #print(f'Biased total is {total}')
+        # print(f'Biased total is {total}')
         self.result = sigmoid(total)
-        #print(f'Final neuron output is {self.result}')
-        #print()
+        # print(f'Final neuron output is {self.result}')
+        # print()
 
     def back_prop(self):
         if self.error != 0.0:
@@ -73,8 +73,14 @@ class Neuron:
                 in_axon.weight -= delta * in_n.result * learning_rate
         self.bias -= delta * learning_rate
 
-    def draw(self, canvas, color='black'):
-        canvas.create_oval(self.x - neuron_scale, self.y - neuron_scale, self.x + neuron_scale, self.y + neuron_scale, fill=color)
+    def draw(self, canvas, color="black"):
+        canvas.create_oval(
+            self.x - neuron_scale,
+            self.y - neuron_scale,
+            self.x + neuron_scale,
+            self.y + neuron_scale,
+            fill=color,
+        )
 
 
 class Axon:
@@ -83,13 +89,15 @@ class Axon:
         self.output = out_n
         self.weight = weight
 
-    def draw(self, canvas, color='grey'):
-        canvas.create_line(self.input.x,
-                           self.input.y,
-                           self.output.x,
-                           self.output.y,
-                           fill=color,
-                           width=axon_scale)
+    def draw(self, canvas, color="grey"):
+        canvas.create_line(
+            self.input.x,
+            self.input.y,
+            self.output.x,
+            self.output.y,
+            fill=color,
+            width=axon_scale,
+        )
 
 
 class Network:
@@ -110,19 +118,19 @@ class Network:
                         hidden_n.connect_input(in_n)
                         in_n.connect_output(hidden_n)
                 else:
-                    for h_n in self.hidden_layers[layer-1]:
+                    for h_n in self.hidden_layers[layer - 1]:
                         hidden_n.connect_input(h_n)
                         h_n.connect_output(hidden_n)
         for _ in range(num_outputs):
             out_n = Neuron(0, 0)
             self.outputs.append(out_n)
-            for h_n in self.hidden_layers[num_hidden_layers-1]:
+            for h_n in self.hidden_layers[num_hidden_layers - 1]:
                 out_n.connect_input(h_n)
                 h_n.connect_output(out_n)
 
     # Used in both train() and test() to get output from the current network
     def forward_prop(self, inputs):
-        print(f'Performing forward propagation')
+        print(f"Performing forward propagation")
         for in_n in self.inputs:
             in_n.result = 0.0
         for h_layer in self.hidden_layers:
@@ -134,7 +142,7 @@ class Network:
 
     # Used with train() to modify weights and biases to reduce error
     def back_prop(self):
-        print(f'Performing backward propagation')
+        print(f"Performing backward propagation")
         for h_layer in self.hidden_layers:
             for h_n in h_layer:
                 h_n.error = 0.0
@@ -150,7 +158,7 @@ class Network:
         self.forward_prop(data.inputs)
         for x in range(num_outputs):
             self.outputs[x].error = data.outputs[x] - self.outputs[x].result
-            print(f'Output {x} error is {self.outputs[x].error}')
+            print(f"Output {x} error is {self.outputs[x].error}")
         self.back_prop()
 
     # Given a datum, produce an output
@@ -170,7 +178,7 @@ class RandData:
 
     def generate(self):
         for _ in range(num_inputs):
-            self.inputs.append(random.random()*10.0-5.0)
+            self.inputs.append(random.random() * 10.0 - 5.0)
         for _ in range(num_outputs):
             self.outputs.append(random.random())
 
@@ -184,5 +192,5 @@ def train():
         network.train(dat)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     train()
